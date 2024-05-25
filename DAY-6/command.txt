@@ -29,6 +29,47 @@ echo "Hello world" = print the string
 echo "Let us try" > test1.txt = it will be added in the test1 file
 
 
+#!/bin/bash
+
+# Check if myfile.txt exists in the current directory
+if [ -e "try.txt" ]; then
+    echo "File exists"
+else
+    echo "File not found"
+fi
+
+while true; do
+  echo -n "Enter the value of number (0 to quit): "
+  read number;
+
+  if [ "$number" -eq 0 ]; then
+    echo "Exiting..."
+    break
+  fi
+
+
+Sure, here's the corrected and completed version of your script:
+
+bash
+Copy code
+#!/bin/bash
+
+while true; do
+  echo -n "Enter the value of number (0 to quit): "
+  read number;
+  if [ "$number" -eq 0 ]; then
+    echo "Exiting..."
+    break
+  fi
+  if [ $((number % 2)) -eq 0 ]; then
+    echo "$number is even";
+  else
+    echo "$number is odd";
+  fi
+done
+  check_odd_even "$number";
+
+
 
 
 

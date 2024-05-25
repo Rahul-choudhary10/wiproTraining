@@ -1,0 +1,233 @@
+Assignment 1: Ensure the script checks if a specific file (e.g., myfile.txt) exists in the current directory. If it exists, print "File exists", 
+otherwise print "File not found".
+ 
+Assignment 2: Write a script that reads numbers from the user until they enter '0'. The script should also print whether each number is odd or even.
+ 
+Assignment 3: Create a function that takes a filename as an argument and prints the number of lines in the file. 
+Call this function from your script with different filenames.
+ 
+Assignment 4: Write a script that creates a directory named TestDir and inside it, creates ten files named File1.txt, File2.txt, ... File10.txt. 
+Each file should contain its filename as its content (e.g., File1.txt contains "File1.txt").
+ 
+Assignment 5: Modify the script to handle errors, such as the directory already existing or lacking permissions to create files.
+Add a debugging mode that prints additional information when enabled.
+ 
+Assignment 6: Given a sample log file, write a script using grep to extract all lines containing "ERROR". 
+Use awk to print the date, time, and error message of each extracted line.
+Data Processing with sed
+ 
+Assignment 7: Create a script that takes a text file and replaces all occurrences of "old_text" with "new_text".
+ Use sed to perform this operation and output the result to a new file.
+
+count_lines() {
+  filename="$1"
+  if [ -f "$filename" ]; then
+    lines=$(wc -l < "$filename")
+    echo "Number of lines in $filename: $lines";
+  else
+    echo "$filename does not exist.";
+  fi
+}
+
+count_lines "rahul.txt";
+count_lines "class.txt";
+count_lines "file3.txt"
+
+
+#!/bin/bash
+
+# Create directory TestDir if it doesn't exist
+mkdir -p TestDir
+cd TestDir || exit
+for ((i=1; i<=10; i++)); do
+    filename="File$i.txt"
+    echo "$filename" > "$filename";
+echo "Files created successfully in Test Directory (TestDir).";
+done;
+
+
+mkdir -p TestDir
+cd TestDir || exit
+for ((i=1; i<=10; i++)); do
+    touch="File$i.txt"
+    echo "$filename" > "$filename";
+done;
+echo "Files created successfully in Test Directory (TestDir).";
+
+
+#!/bin/bash
+
+# Function to display debug information
+debug() {
+  if [ "$DEBUG_MODE" = true ]; then
+    echo "DEBUG: $1"
+  fi
+}
+
+# Function to handle errors
+handle_error() {
+  echo "Error: $1"
+  exit 1
+}
+
+# Function to create files
+create_files() {
+  for ((i=1; i<=10; i++)); do
+    filename="File$i.txt"
+    debug "Creating file: $filename"
+    echo "$filename" > "$filename" || handle_error "Unable to create $filename"
+  done
+}
+
+# Main function
+main() {
+  # Enable debugging mode if DEBUG_MODE variable is set to true
+  if [ "$DEBUG_MODE" = true ]; then
+    echo "Debugging mode enabled."
+  fi
+
+  # Create directory if it doesn't exist
+  if [ ! -d "TestDir" ]; then
+    mkdir TestDir || handle_error "Unable to create directory TestDir"
+    debug "Directory TestDir created"
+  else
+    handle_error "Directory TestDir already exists"
+  fi
+
+  # Navigate to TestDir
+  cd TestDir || handle_error "Unable to navigate to directory TestDir"
+
+  # Create files
+  create_files
+
+  echo "Files created successfully in TestDir."
+}
+
+# Parse command line arguments
+while getopts ":d" opt; do
+  case ${opt} in
+    d )
+      DEBUG_MODE=true
+      ;;
+    \? )
+      echo "Invalid option: $OPTARG"
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+
+# Run the main function
+main
+
+
+#!/bin/bash
+
+# Function to display debug information
+debug() {
+  if [ "$DEBUG_MODE" = true ]; then
+    echo "DEBUG: $1";
+  fi
+}
+handle_error() {
+  echo "Error: $1";
+  exit 1
+}
+create_files() {
+  for ((i=1; i<=10; i++)); do
+    filename="File$i.txt";
+    debug "Creating file: $filename";
+    echo "$filename" > "$filename" || handle_error "Unable to create $filename";
+  done
+}
+main() {
+  if [ "$DEBUG_MODE" = true ]; then
+    echo "Debugging mode enabled.";
+  fi
+  if [ ! -d "TestDir1" ]; then
+    mkdir TestDir1 || handle_error "Unable to create directory TestDir";
+    debug "Directory TestDir created"
+  else
+    handle_error "Directory TestDir1 already exists";
+  fi
+  cd TestDir1 || handle_error "Unable to navigate to directory TestDir",
+  create_files
+  echo "Files created successfully in TestDir1.";
+}
+if [ "$1" = "-d" ]; then
+  DEBUG_MODE=true;
+fi
+main
+
+
+#!/bin/bash
+
+# Step 1: Search for lines containing "ERROR"
+grep "ERROR" sample.log > errors.log
+awk '{print $1, $2, $0}' errors.log > errors_with_datetime.log
+sed -E 's/^([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9]{2}:[0-9]{2}).*/\1 \2/' errors_with_datetime.log > formatted_errors.log
+rm errors.log errors_with_datetime.log
+echo "Errors extracted and formatted.";
+
+
+cat sample.log
+grep "ERROR" sample.log > errors.log
+awk '{print $1, $2, $0}' errors.log > errors_with_datetime.log
+sed -E 's/^([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9]{2}:[0-9]{2}).*/\1 \2/' errors_with_datetime.log > formatted_errors.log
+rm errors.log errors_with_datetime.log
+echo "Errors extracted and formatted.";
+
+mkdir log_processing
+cd log_processing
+nano sample.log
+2024-05-27 12:34:56 ERROR: Something went wrong
+2024-05-28 13:45:57 ERROR: Another error occurred
+grep "ERROR" sample.log > errors.log
+awk '{print $1, $2, $0}' errors.log
+
+
+nano replace_text.sh
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <input_file> <old_text> <new_text>";
+    exit 1
+fi
+input_file="$1"
+old_text="$2"
+new_text="$3"
+sed "s/$old_text/$new_text/g" "$input_file" > "${input_file}_modified";
+echo "Replacement complete. Modified file saved as ${input_file}_modified";
+
+
+chmod +x replace_text.sh
+./replace_text.sh input_file.txt old_text new_text
+
+
+if [ "$#" -ne 4 ]; then
+    echo "Usage: $0 input_file old_text new_text output_file"
+    exit 1
+fi
+INPUT_FILE=$1
+OLD_TEXT=$2
+NEW_TEXT=$3
+OUTPUT_FILE=$4
+sed "s/$OLD_TEXT/$NEW_TEXT/g" "$INPUT_FILE" > "$OUTPUT_FILE"
+echo "Replaced all occurrences of '$OLD_TEXT' with '$NEW_TEXT' in '$INPUT_FILE' and saved;
+
+
+#!/bin/bash
+
+# Check if the correct number of arguments is provided
+if [ "$#" -ne 4 ]; then
+    echo "Usage: $0 input_file old_text new_text output_file"
+    exit 1
+fi
+INPUT_FILE=$1
+OLD_TEXT=$2
+NEW_TEXT=$3
+OUTPUT_FILE=$4
+sed "s/$OLD_TEXT/$NEW_TEXT/g" "$INPUT_FILE" > "$OUTPUT_FILE"
+echo "Replaced all occurrences of '$OLD_TEXT' with '$NEW_TEXT' in '$INPUT_FILE' and saved to '$OUTPUT_FILE'"
+
+
+chmod +x replace_text.sh
+./replace_text.sh input_file.txt old_text new_text output_file.txt
+
